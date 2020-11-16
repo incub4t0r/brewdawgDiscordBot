@@ -7,7 +7,10 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
+file_location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
 bot = commands.Bot(command_prefix="!")
+
 @bot.event
 async def on_ready():
     print('Logged in')
@@ -78,4 +81,14 @@ async def callsign(ctx,*,reason):
     final_string = f"{author} calls {'@everyone'}! Reason: {reason}"
     await ctx.send(final_string)
 #https://stackoverflow.com/questions/64028189/discord-ext-commands-errors-missingrequiredargument-user-is-a-required-argument
+
+@bot.command()
+async def godawgs(ctx):
+    final_string = ""
+    art = open(os.path.join(file_location, 'brewdawg.txt'))
+    for line in art:
+        final_string += line
+    await ctx.send(f"```{final_string}```")
+
+
 bot.run(TOKEN)
