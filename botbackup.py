@@ -42,11 +42,11 @@ async def on_message(message):
         except:
             await message.channel.send("There was an error calculating the time remaining")
 
-#     elif message.content == '!help':
-#        try:
-#            await message.channel.send("""Hello there! I am St. Bernard, a discord bot built for Company E2.\n
-#Try using !time or !t to get the time until leave.""")
-#        except:
-#            await message.channel.send("Something went terribly wrong")
+     elif message.content == '!help':
+        try:
+            await message.channel.send("""Hello there! I am St. Bernard, a discord bot built for Company E2.\n
+Try using !time or !t to get the time until leave.""")
+        except:
+            await message.channel.send("Something went terribly wrong")
 
 client.run(TOKEN)
