@@ -9,7 +9,7 @@ file_location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__fil
 #    return (delta)
 
 def send_msg(msg):
-        emb = discord.Embed(title=None, description=msg,color=0x957530)
+        emb = discord.Embed(title=None, description=msg,color=0x81FF7A)
         return emb
 
 class Countdown(commands.Cog):

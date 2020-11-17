@@ -1,7 +1,7 @@
 #importing the discord module
-import discord, datetime, os, random, json
+import discord, datetime, os, random, json, asyncio
 from dotenv import load_dotenv
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -30,7 +30,10 @@ async def on_ready():
     print('Logged in')
     print("Username: ",end='')
     print(bot.user.name)
+    print('-----')
     await bot.change_presence(activity=discord.Game(name="West Point"))
+    #bot.loop.create_task(check_new_day())
+
     #https://stackoverflow.com/questions/59126137/how-to-change-discord-py-bot-activity
 
 ### COMMANDS START ###
@@ -38,6 +41,19 @@ async def on_ready():
 def send_msg(msg):
     emb = discord.Embed(title=None, description=msg,color=0x957530)
     return emb
+
+def calc_leave():
+    dateLeave = datetime.datetime(2020, 12, 13)
+    today = datetime.datetime.now()
+    delta = dateLeave-today
+    date_split = str(delta).split()
+    date_small_split = date_split[2].split(":")
+
+    msg_today = "ITS A NEW DAY!!!\n\nToday is " + today.strftime("%A") + ".\n"
+    msg_remaining = "There are `{days}` days, `{hours}` hours, `{minutes}` minutes, and `{seconds}` seconds remaining until leave.".format(
+        days=date_split[0],hours=date_small_split[0],minutes=date_small_split[1],seconds=round(float(date_small_split[2])))
+    resp = "".join((msg_today, msg_remaining))
+    return resp
 
 @bot.command(
     help = "Utilizes 1337 coding to determine correct response and latency",
@@ -63,8 +79,6 @@ async def echo(ctx, *args):
 )
 async def bonk(ctx, members: commands.Greedy[discord.Member]):
     bonked = ", ".join(x.name for x in members)
-    #author = ctx.author
-
     resp = '{} just got bonked!'.format(bonked)
     await ctx.send(embed = send_msg(resp))
 
@@ -76,7 +90,7 @@ async def roar(ctx,*,reason):
     author = ctx.author.mention
     resp = f"{author} calls {'@everyone'}! Reason: {reason}"
     await ctx.send(resp)
-    #await ctx.send(embed = send_msg(resp))
+
 #https://stackoverflow.com/questions/64028189/discord-ext-commands-errors-missingrequiredargument-user-is-a-required-argument
 
 @bot.command(
@@ -85,9 +99,6 @@ async def roar(ctx,*,reason):
 )
 async def godawgs(ctx):
     resp = f"{'@everyone'} go dawgs"
-    #art = open(os.path.join(file_location, 'brewdawg.txt'))
-    #for line in art:
-    #    resp += line
     await ctx.send(resp)
 
 @bot.command(
@@ -98,6 +109,16 @@ async def source(ctx):
     resp = 'https://github.com/incub4t0r/brewdawgDiscordBot'
     await ctx.send(embed = send_msg(resp))
 
+@tasks.loop(minutes=1)
+async def check_new_day():
+    while (True):
+        channel = bot.get_channel(777938226132418590)
+        today = datetime.datetime.now()
+        if (int(str(today).split()[1].split(":")[0])==6 and int(str(today).split()[1].split(":")[1])==0):
+            resp = calc_leave()
+            await channel.send(embed = send_msg(resp))
+            await asyncio.sleep(65)
+
 bot.run(TOKEN)
 
 
@@ -106,4 +127,5 @@ bot.run(TOKEN)
 # add a bark or bite system to add/take away balance
 # add exception handling
 # add a bonk tracker
-# add a !source to give a link to the github it is hosted on
+# add a !source to give a link to the github it is hosted on --- done
+# change the @everyone to be unembedded

@@ -17,7 +17,7 @@ def _save():
             json.dump(brewbucks, f)
 
 def send_msg(msg):
-        emb = discord.Embed(title=None, description=msg,color=0x957530)
+        emb = discord.Embed(title=None, description=msg,color=0x63B1FF)
         return emb
 
 class Brewbank(commands.Cog):
