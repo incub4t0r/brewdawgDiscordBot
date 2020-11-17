@@ -31,9 +31,7 @@ class Countdown(commands.Cog):
         msg_remaining = "There are `{days}` days, `{hours}` hours, `{minutes}` minutes, and `{seconds}` seconds remaining until leave.".format(
             days=date_split[0],hours=date_small_split[0],minutes=date_small_split[1],seconds=round(float(date_small_split[2])))
         resp = "".join((msg_today, msg_remaining))
-        emb = discord.Embed(title=None, description=resp)
-        await ctx.send(embed=emb)
-
+        await ctx.send(embed = send_msg(resp))
 
     @commands.command(aliases=['graduation'],
         help = "Calculates using datetime the amount of time remaining until graduation",
@@ -50,8 +48,7 @@ class Countdown(commands.Cog):
         msg_remaining = "For the Class of 2023, there are `{days}` days, `{hours}` hours, `{minutes}` minutes, and `{seconds}` seconds remaining until graduation.".format(
             days=date_split[0],hours=date_small_split[0],minutes=date_small_split[1],seconds=round(float(date_small_split[2])))
         resp = "".join((msg_today, msg_remaining))
-        emb = discord.Embed(title=None, description=resp)
-        await ctx.send(embed=emb)
+        await ctx.send(embed = send_msg(resp))
 
 def setup(bot):
     bot.add_cog(Countdown(bot))

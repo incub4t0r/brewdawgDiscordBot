@@ -30,11 +30,12 @@ async def on_ready():
     print('Logged in')
     print("Username: ",end='')
     print(bot.user.name)
-
+    await bot.change_presence(activity=discord.Game(name="West Point"))
+    #https://stackoverflow.com/questions/59126137/how-to-change-discord-py-bot-activity
 
 ### COMMANDS START ###
 
-def send_msg(msg, ctx):
+def send_msg(msg):
     emb = discord.Embed(title=None, description=msg,color=0x957530)
     return emb
 
@@ -44,7 +45,7 @@ def send_msg(msg, ctx):
 )
 async def ping(ctx):
     resp = 'Pong! {0}'.format(bot.latency)
-    await ctx.send(embed = send_msg(resp, ctx))
+    await ctx.send(embed = send_msg(resp))
 
 @bot.command(
     help = "Parses using a for loop an entire message and returns it",
@@ -54,8 +55,7 @@ async def echo(ctx, *args):
     resp = ""
     for arg in args:
         resp = resp + " " + arg
-    await ctx.send(embed = send_msg(resp, ctx))
-
+    await ctx.send(embed = send_msg(resp))
 
 @bot.command(
     help="Send someone to horny jail",
@@ -66,8 +66,7 @@ async def bonk(ctx, members: commands.Greedy[discord.Member]):
     #author = ctx.author
 
     resp = '{} just got bonked!'.format(bonked)
-    await ctx.send(embed = send_msg(resp, ctx))
-
+    await ctx.send(embed = send_msg(resp))
 
 @bot.command(
     help="Sends out a loud and thunderous 'go dawgs' to notify everyone",
@@ -76,17 +75,28 @@ async def bonk(ctx, members: commands.Greedy[discord.Member]):
 async def roar(ctx,*,reason):
     author = ctx.author.mention
     resp = f"{author} calls {'@everyone'}! Reason: {reason}"
-    await ctx.send(embed = send_msg(resp, ctx))
+    await ctx.send(resp)
+    #await ctx.send(embed = send_msg(resp))
 #https://stackoverflow.com/questions/64028189/discord-ext-commands-errors-missingrequiredargument-user-is-a-required-argument
 
-@bot.command()
+@bot.command(
+    help="You know what this does",
+    brief="You know what this does"
+)
 async def godawgs(ctx):
-    resp = ""
-    art = open(os.path.join(file_location, 'brewdawg.txt'))
-    for line in art:
-        resp += line
-    await ctx.send(embed = send_msg(resp, ctx))
+    resp = f"{'@everyone'} go dawgs"
+    #art = open(os.path.join(file_location, 'brewdawg.txt'))
+    #for line in art:
+    #    resp += line
+    await ctx.send(resp)
 
+@bot.command(
+    help="Provides the github source for the bot",
+    brief="See the code"
+)
+async def source(ctx):
+    resp = 'https://github.com/incub4t0r/brewdawgDiscordBot'
+    await ctx.send(embed = send_msg(resp))
 
 bot.run(TOKEN)
 
