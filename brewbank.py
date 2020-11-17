@@ -16,45 +16,65 @@ def _save():
         with open(os.path.join(file_location, 'brewbucks.json'), 'w+') as f:
             json.dump(brewbucks, f)
 
+def send_msg(msg):
+        emb = discord.Embed(title=None, description=msg,color=0x957530)
+        return emb
+
 class Brewbank(commands.Cog):
     def __init(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(
+        help = "Check your brewbuck balance",
+        brief = "Check your brewbuck balance"
+    )
     async def balance(self, ctx):
         id = str(ctx.message.author.id)
         if id in brewbucks:
-            await ctx.send("You have {} brewbucks".format(brewbucks[id]))
+            resp = ("You have {} brewbucks".format(brewbucks[id]))
         else:
-            await ctx.send("You do not have an account")
+            resp = ("You do not have an account")
+        await ctx.send(embed = send_msg(resp))
 
-    @commands.command()
+
+    @commands.command(
+        help = "Register for a brewbuck account",
+        brief = "Register for a brewbuck account"
+    )
     async def register(self, ctx):
         id = str(ctx.message.author.id)
         if id not in brewbucks:
             brewbucks[id] = 100
-            await ctx.send("You are now registered")
+            resp = ("You are now registered")
             _save()
         else:
-            await ctx.send("You already have an account")
+            resp = ("You already have an account")
+        await ctx.send(embed = send_msg(resp))
 
-    @commands.command(pass_context=True)
+    @commands.command(
+        help = "Transfer brewbucks to another user",
+        brief = "Send brewbucks to other user",
+        pass_context=True)
     async def transfer(self, ctx, amount: int, other: discord.Member):
         primary_id = str(ctx.message.author.id)
         other_id = str(other.id)
         if primary_id not in brewbucks:
-            await ctx.send("You do not have an account")
+            resp = ("You do not have an account")
         elif other_id not in brewbucks:
-            await ctx.send("The other party does not have an account")
+            resp = ("The other party does not have an account")
         elif brewbucks[primary_id] < amount:
-            await ctx.send("You cannot afford this transaction")
+            resp = ("You cannot afford this transaction")
         else:
             brewbucks[primary_id] -= amount
             brewbucks[other_id] += amount
-            await ctx.send("Transaction complete")
+            resp = ("Transaction complete")
+        await ctx.send(embed = send_msg(resp))
         _save()
 
-    @commands.command()
+    @commands.command(
+        help = "Force the bot to save brewbuck amounts",
+        brief = "Force bot to save bank"
+    )
     async def save(self, ctx):
         _save()
 
