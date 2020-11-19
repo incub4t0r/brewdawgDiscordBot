@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from discord.ext import commands, tasks
 
 load_dotenv()
-
+!l
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
@@ -12,7 +12,7 @@ file_location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__fil
 
 bot = commands.Bot(command_prefix="!")
 
-# Attempts to load the extensions from brewbank and countdown
+# Attempts to load the extensions from brewbank, countdown, and bonktracker
 try:
     bot.load_extension('brewbank')
     print("Loaded brewbank.py")
@@ -24,13 +24,17 @@ try:
     print("Loaded countdown.py")
 except:
     print("Error loading countdown, countdown.py not found")
+try:
+    bot.load_extension('bonktracker')
+    print("Loaded bonktracker.py")
+except:
+    print("Error loading bonktracker, bonktracker.py not found")
 
 # Logs in bot
 @bot.event
 async def on_ready():
     print('Logged in')
-    print("Username: ",end='')
-    print(bot.user.name)
+    print(f"Username: {bot.user.name}")
     print('-----')
     await bot.change_presence(activity=discord.Game(name="West Point"))
 
@@ -70,15 +74,6 @@ async def echo(ctx, *args):
     resp = ""
     for arg in args:
         resp = resp + " " + arg
-    await ctx.send(embed = send_msg(resp))
-
-@bot.command(
-    help="Send someone to horny jail",
-    brief="Send someone to horny jail"
-)
-async def bonk(ctx, members: commands.Greedy[discord.Member]):
-    bonked = ", ".join(x.name for x in members)
-    resp = f'{bonked} just got bonked!'
     await ctx.send(embed = send_msg(resp))
 
 @bot.command(
@@ -122,7 +117,7 @@ async def check_new_day():
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        await ctx.send("No such command")
+        await ctx.send(embed = send_msg("No such command, use !help to view commands"))
     else:
         raise error
 
@@ -133,8 +128,8 @@ bot.run(TOKEN)
 
 #TODO
 # add a brewbuck system --- done
-# add a bark or bite system to add/take away balance
-# add exception handling
-# add a bonk tracker
+# add exception handling --- partial
+# add a bonk tracker --- done
 # add a !source to give a link to the github it is hosted on --- done
-# change the @everyone to be unembedded
+# change the @everyone to be unembedded --- done
+# add a bark or bite system to add/take away balance
