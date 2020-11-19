@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from discord.ext import commands, tasks
 
 load_dotenv()
-!l
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
@@ -133,3 +133,5 @@ bot.run(TOKEN)
 # add a !source to give a link to the github it is hosted on --- done
 # change the @everyone to be unembedded --- done
 # add a bark or bite system to add/take away balance
+
+#https://imgur.com/a/2aM6AnD dm function
