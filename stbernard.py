@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from discord.ext import commands, tasks
 
 load_dotenv()
+
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 
@@ -32,7 +33,6 @@ async def on_ready():
     print(bot.user.name)
     print('-----')
     await bot.change_presence(activity=discord.Game(name="West Point"))
-    #bot.loop.create_task(check_new_day())
 
     #https://stackoverflow.com/questions/59126137/how-to-change-discord-py-bot-activity
 
@@ -48,7 +48,6 @@ def calc_leave():
     delta = dateLeave-today
     date_split = str(delta).split()
     date_small_split = date_split[2].split(":")
-
     msg_today = "ITS A NEW DAY!!!\n\nToday is " + today.strftime("%A") + ".\n"
     msg_remaining = "There are `{days}` days, `{hours}` hours, `{minutes}` minutes, and `{seconds}` seconds remaining until leave.".format(
         days=date_split[0],hours=date_small_split[0],minutes=date_small_split[1],seconds=round(float(date_small_split[2])))
@@ -60,7 +59,7 @@ def calc_leave():
     brief = "Prints pong and latency"
 )
 async def ping(ctx):
-    resp = 'Pong! {0}'.format(bot.latency)
+    resp = f'Pong! {bot.latency}'
     await ctx.send(embed = send_msg(resp))
 
 @bot.command(
@@ -79,7 +78,7 @@ async def echo(ctx, *args):
 )
 async def bonk(ctx, members: commands.Greedy[discord.Member]):
     bonked = ", ".join(x.name for x in members)
-    resp = '{} just got bonked!'.format(bonked)
+    resp = f'{bonked} just got bonked!'
     await ctx.send(embed = send_msg(resp))
 
 @bot.command(
@@ -111,14 +110,24 @@ async def source(ctx):
 
 @tasks.loop(minutes=1)
 async def check_new_day():
-    while (True):
-        channel = bot.get_channel(777938226132418590)
-        today = datetime.datetime.now()
-        if (int(str(today).split()[1].split(":")[0])==6 and int(str(today).split()[1].split(":")[1])==0):
-            resp = calc_leave()
-            await channel.send(embed = send_msg(resp))
-            await asyncio.sleep(65)
+    await bot.wait_until_ready()
+    channel = bot.get_channel(758795301191680001)
+    today = datetime.datetime.now()
+    #print(int(str(today).split()[1].split(":")[0]))
+    if (int(str(today).split()[1].split(":")[0])==7 and int(str(today).split()[1].split(":")[1])==0):
+        resp = calc_leave()
+        await channel.send(embed = send_msg(resp))
+        await asyncio.sleep(65)
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.send("No such command")
+    else:
+        raise error
+
+
+check_new_day.start()
 bot.run(TOKEN)
 
 
