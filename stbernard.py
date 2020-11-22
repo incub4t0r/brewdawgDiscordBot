@@ -1,8 +1,9 @@
-#importing the discord module
+### IMPORTS ###
 import discord, datetime, os, random, json, asyncio
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
 
+### LOADING VAR/ENV ###
 load_dotenv()
 
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -10,7 +11,7 @@ GUILD = os.getenv('DISCORD_GUILD')
 
 file_location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-bot = commands.Bot(command_prefix="!")
+bot = commands.Bot(command_prefix=">")
 
 # Attempts to load the extensions from brewbank, countdown, and bonktracker
 try:
@@ -33,19 +34,29 @@ except:
 # Logs in bot
 @bot.event
 async def on_ready():
+    global reply
     print('Logged in')
     print(f"Username: {bot.user.name}")
     print('-----')
-    await bot.change_presence(activity=discord.Game(name="West Point"))
+    await bot.change_presence(activity=discord.Game(name="Listening in st-bernard"))
+    reply = bot.get_channel(779854850963537981)
 
     #https://stackoverflow.com/questions/59126137/how-to-change-discord-py-bot-activity
 
-### COMMANDS START ###
+### DEFINED FUNCTIONS ###
 
+# Checks to ensure bot commands are being issued in correct place
+# def in_channel(channel_id):
+#     def predicate(ctx):
+#         return ctx.message.channel.id == channel_id
+#     return commands.check(predicate)
+
+# Easy send message function
 def send_msg(msg):
     emb = discord.Embed(title=None, description=msg,color=0x957530)
     return emb
 
+# Returns time until leave
 def calc_leave():
     dateLeave = datetime.datetime(2020, 12, 13)
     today = datetime.datetime.now()
@@ -58,13 +69,15 @@ def calc_leave():
     resp = "".join((msg_today, msg_remaining))
     return resp
 
+### DEFINED COMMANDS ###
+
 @bot.command(
     help = "Utilizes 1337 coding to determine correct response and latency",
     brief = "Prints pong and latency"
 )
 async def ping(ctx):
     resp = f'Pong! {bot.latency}'
-    await ctx.send(embed = send_msg(resp))
+    await reply.send(embed = send_msg(resp))
 
 @bot.command(
     help = "Parses using a for loop an entire message and returns it",
@@ -74,7 +87,7 @@ async def echo(ctx, *args):
     resp = ""
     for arg in args:
         resp = resp + " " + arg
-    await ctx.send(embed = send_msg(resp))
+    await reply.send(embed = send_msg(resp))
 
 @bot.command(
     help="Sends out a loud and thunderous 'go dawgs' to notify everyone",
@@ -83,7 +96,7 @@ async def echo(ctx, *args):
 async def roar(ctx,*,reason):
     author = ctx.author.mention
     resp = f"{author} calls {'@everyone'}! Reason: {reason}"
-    await ctx.send(resp)
+    await reply.send(resp)
 
 #https://stackoverflow.com/questions/64028189/discord-ext-commands-errors-missingrequiredargument-user-is-a-required-argument
 
@@ -93,31 +106,29 @@ async def roar(ctx,*,reason):
 )
 async def godawgs(ctx):
     resp = f"{'@everyone'} go dawgs"
-    await ctx.send(resp)
+    await reply.send(resp)
 
 @bot.command(
     help="Provides the github source for the bot",
     brief="See the code"
 )
 async def source(ctx):
-    resp = 'https://github.com/incub4t0r/brewdawgDiscordBot'
-    await ctx.send(embed = send_msg(resp))
+    resp = 'Created by 43y3s.\nhttps://github.com/incub4t0r/brewdawgDiscordBot'
+    await reply.send(embed = send_msg(resp))
 
 @tasks.loop(minutes=1)
 async def check_new_day():
     await bot.wait_until_ready()
-    channel = bot.get_channel(758795301191680001)
     today = datetime.datetime.now()
-    #print(int(str(today).split()[1].split(":")[0]))
     if (int(str(today).split()[1].split(":")[0])==7 and int(str(today).split()[1].split(":")[1])==0):
         resp = calc_leave()
-        await channel.send(embed = send_msg(resp))
+        await reply.send(embed = send_msg(resp))
         await asyncio.sleep(65)
 
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
-        await ctx.send(embed = send_msg("No such command, use !help to view commands"))
+        await reply.send(embed = send_msg("No such command, use !help to view commands"))
     else:
         raise error
 

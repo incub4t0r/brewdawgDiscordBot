@@ -3,11 +3,6 @@ import discord, datetime, os, random, json
 
 file_location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-#def calc_delta(dateLeave):
-#    today = datetime.datetime.now()
-#    delta = dateLeave-today
-#    return (delta)
-
 def send_msg(msg):
         emb = discord.Embed(title=None, description=msg,color=0x81FF7A)
         return emb
