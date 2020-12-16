@@ -13,7 +13,7 @@ class Countdown(commands.Cog):
     
     @commands.command(
         help = "Calculates using datetime the amount of time remaining until winter leave",
-        brief = "Prints time until winter leave"
+        brief = "Prints time until Dec 13th/Winter Leave"
     )
     async def leave(self, ctx):
         dateLeave = datetime.datetime(2020, 12, 13)
@@ -23,7 +23,7 @@ class Countdown(commands.Cog):
         date_small_split = date_split[2].split(":")
         
         msg_today = "gooooOOOOOOOOOOO BREEEEWWWWDAAAWWWWWGGSSSS!!!\n\nToday is " + today.strftime("%A") + ".\n"
-        msg_remaining = "There are `{days}` days, `{hours}` hours, `{minutes}` minutes, and `{seconds}` seconds remaining until leave.".format(
+        msg_remaining = "There are `{days}` days, `{hours}` hours, `{minutes}` minutes, and `{seconds}` seconds remaining until December 13th.".format(
             days=date_split[0],hours=date_small_split[0],minutes=date_small_split[1],seconds=round(float(date_small_split[2])))
         resp = "".join((msg_today, msg_remaining))
         await ctx.send(embed = send_msg(resp))

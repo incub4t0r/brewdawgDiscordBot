@@ -64,7 +64,7 @@ def calc_leave():
     date_split = str(delta).split()
     date_small_split = date_split[2].split(":")
     msg_today = "ITS A NEW DAY!!!\n\nToday is " + today.strftime("%A") + ".\n"
-    msg_remaining = "There are `{days}` days, `{hours}` hours, `{minutes}` minutes, and `{seconds}` seconds remaining until leave.".format(
+    msg_remaining = "There are `{days}` days, `{hours}` hours, `{minutes}` minutes, and `{seconds}` seconds remaining until December 13th.".format(
         days=date_split[0],hours=date_small_split[0],minutes=date_small_split[1],seconds=round(float(date_small_split[2])))
     resp = "".join((msg_today, msg_remaining))
     return resp

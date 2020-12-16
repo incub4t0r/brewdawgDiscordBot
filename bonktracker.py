@@ -36,8 +36,8 @@ class Bonktracker(commands.Cog):
 
     # Creates new bot command for bonk
     @commands.command(
-        help="Send someone to horny jail",
-        brief="Send someone to horny jail"
+        help="Bonk someone and raise their bonk counter",
+        brief="Bonk someone"
     )
     async def bonk(self, ctx, members: commands.Greedy[discord.Member]):
         bonked = ", ".join(x.name for x in members)
